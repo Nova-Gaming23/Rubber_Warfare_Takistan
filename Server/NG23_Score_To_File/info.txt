@@ -1,0 +1,28 @@
+
+Score_to_File.sqf =Function=> ng23_ScoreToFile
+Caller: updateserver.fsm / END
+
+
+
+
+
+Public Variable Server & Client
+Wird am ende des Spiels verwendet um zu Bestimmen ob eine Datei erstellt werden soll oder nicht
+Wird hauptsächlcih als ein und aus schalter im WF-Menu Benutzt
+
+WF_Logic SetVariable["NG23_ScoreLogger_Enabled",BOOL,true]
+
+
+
+
+Public Variable Server & Client
+Wir am Anfang der Runde auf dem Server Als Variable Definiertr und über die WF_Logic an die CLient´s gesendet. Keine änderung "on the fly"
+Der Client Überprüft ob die ID mit der Auf dem Server hinterlegten überinstimmt und macht den Speiler zum Admin.
+
+WF_Logic getVariable ["NG23_Server_Side_Setting_Admin_IDs",[]]
+
+
+Client Variable.
+Wird beim Starten der Mission Bestimmt. Default:fasle
+
+PlayerIsAdmin
