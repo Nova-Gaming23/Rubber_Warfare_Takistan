@@ -1,0 +1,147 @@
+/*%FSM<COMPILE "D:\Programme\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, updateteamsmarkers">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Init",0,250,66.542603,-131.405823,156.542603,-81.406097,0.000000,"Init"};
+item1[] = {"Update_Markers",2,4346,-66.836029,-56.267544,23.163887,-6.267582,0.000000,"Update Markers"};
+item2[] = {"End",1,250,-194.208939,14.422928,-104.208908,64.422928,0.000000,"End"};
+item3[] = {"Loop",4,218,65.605347,-56.267605,155.605377,-6.267574,0.000000,"Loop"};
+item4[] = {"Gameover",4,218,-192.871109,-57.148956,-102.871117,-7.148972,0.000000,"Gameover"};
+link0[] = {0,3};
+link1[] = {1,3};
+link2[] = {1,4};
+link3[] = {3,1};
+link4[] = {4,2};
+globals[] = {0.000000,0,0,0,0,640,480,1,14,6316128,1,-395.307037,395.306915,79.046959,-351.956635,617,884,1};
+window[] = {2,-1,-1,-1,-1,884,104,1476,104,3,635};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "updateteamsmarkers";
+        class States
+        {
+                /*%FSM<STATE "Init">*/
+                class Init
+                {
+                        name = "Init";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"_sideText = sideJoinedText;" \n
+                         "_label = """";" \n
+                         "" \n
+                         "_safeWest = SpawnSafeZone_2;" \n
+                         "_safeEast = SpawnSafeZone_1;" \n
+                         "_SafeZone = Call compile Format[""_safe%1"",sideJoined];" \n
+                         "" \n
+                         "_count = 1;" \n
+                         "{" \n
+                         "	_marker = Format[""%1AdvancedSquad%2Marker"",_sideText,_count];" \n
+                         "	createMarkerLocal [_marker,[0,0,0]];" \n
+                         "	_marker setMarkerTypeLocal ""mil_arrow2"";" \n
+                         "	if (sideJoined == west) then {_marker setMarkerColorLocal ""ColorBlue""} else {_marker setMarkerColorLocal ""ColorRed""};" \n
+                         "	_marker setMarkerSizeLocal [0.30,0.30];" \n
+                         "	_count = _count +1;" \n
+                         "} forEach clientTeams;" \n
+                         "_medics = ['US_Soldier_Medic_EP1','US_Delta_Force_Medic_EP1','RU_Soldier_Medic','TK_Soldier_Medic_EP1','BAF_Soldier_Medic_DDPM'];" \n
+                         "_engineers = ['RUS_Soldier_Sab','USMC_SoldierS_Engineer','US_Soldier_Engineer_EP1','TK_Soldier_Engineer_EP1','CDF_Soldier_Engineer','Ins_Soldier_Sapper','BAF_Soldier_EN_DDPM'];" \n
+                         "_specops = ['MVD_Soldier','GER_Soldier_Scout_EP1','FR_Sapper','TK_Special_Forces_EP1','Ins_Soldier_2','BAF_Soldier_FAC_DDPM','BAF_Soldier_FAC_MTP'];" \n
+                         "_commanders = ['RUS_Commander','BAF_Soldier_Officer_DDPM'];" \n
+                         "_lastUpdate = time;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Loop">*/
+                                class Loop
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Update_Markers";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _lastUpdate > 1 && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Update_Markers">*/
+                class Update_Markers
+                {
+                        name = "Update_Markers";
+                        itemno = 1;
+                        init = /*%FSM<STATEINIT""">*/"_count = 1;" \n
+                         "{" \n
+                         "	if !(isNil '_x') then {" \n
+                         "		_markerType = ""mil_arrow2"";" \n
+                         "		_marker = Format[""%1AdvancedSquad%2Marker"",_sideText,_count];" \n
+                         "		_InSafeZone =  if ((leader _x) in (list _SafeZone)) then {true} else {false};" \n
+                         "" \n
+                         "		if (alive (leader _x) && !(_InSafeZone) ) then {" \n
+                         "			_label = """";" \n
+                         "			if (isPlayer (leader _x)) then {_label = Format[""%1"",name (leader _x)];" \n
+                         "			if ((typeOF (leader _x)) in _medics) then  {_marker setMarkerColorLocal ""ColorYellow"";};" \n
+                         "			if ((typeOF (leader _x)) in _engineers) then  {_marker setMarkerColorLocal ""ColorOrange"";};" \n
+                         "			if ((typeOF (leader _x)) in _specops) then  {_marker setMarkerColorLocal ""ColorBlack"";};" \n
+                         "			if ((typeOF (leader _x)) in _commanders) then  {_marker setMarkerColorLocal ""ColorGreen"";};" \n
+                         "			} else {_label = Format[""*%1"",_count]};" \n
+                         "			_marker setMarkerTextLocal _label;" \n
+                         "			_marker setMarkerPosLocal GetPos (leader _x);" \n
+                         "			_marker setMarkerDirLocal direction vehicle (leader _x);" \n
+                         "			_marker setMarkerAlphaLocal 1;" \n
+                         "		} else {" \n
+                         "			_marker setMarkerAlphaLocal 0;" \n
+                         "			_markerType = ""b_empty"";" \n
+                         "		};" \n
+                         "	" \n
+                         "		_marker setMarkerTypeLocal _markerType;" \n
+                         "	};" \n
+                         "	_count = _count + 1;" \n
+                         "} forEach clientTeams;" \n
+                         "" \n
+                         "_lastUpdate = time;"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Gameover">*/
+                                class Gameover
+                                {
+                                        itemno = 4;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Loop">*/
+                                class Loop
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Update_Markers";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _lastUpdate > 1 && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Init";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/

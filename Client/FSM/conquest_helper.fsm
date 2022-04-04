@@ -1,0 +1,195 @@
+/*%FSM<COMPILE "C:\Program Files (x86)\Bohemia Interactive\Tools\FSM Editor Personal Edition\scriptedFSM.cfg, conquest_helper">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Init",0,250,53.240814,-221.988968,143.240845,-171.989166,0.000000,"Init"};
+item1[] = {"End",1,250,-216.387955,-52.508366,-126.387947,-2.508394,0.000000,"End"};
+item2[] = {"Update_Conquest",2,4346,-82.090652,-139.314026,7.909359,-89.314034,0.000000,"Update" \n "Conquest"};
+item3[] = {"Loop",4,218,53.846153,-139.681244,143.846161,-89.681236,0.000000,"Loop"};
+item4[] = {"Gameover",4,218,-216.387955,-139.464890,-126.387947,-89.464890,0.000000,"Gameover"};
+link0[] = {0,3};
+link1[] = {2,3};
+link2[] = {2,4};
+link3[] = {3,2};
+link4[] = {4,1};
+globals[] = {0.000000,0,0,0,0,640,480,1,8,6316128,1,-268.601563,268.601196,187.241531,-261.594849,997,833,1};
+window[] = {0,-1,-1,-1,-1,1003,25,1550,25,1,1015};
+*//*%FSM</HEAD>*/
+class FSM
+{
+  fsmName = "conquest_helper";
+  class States
+  {
+    /*%FSM<STATE "Init">*/
+    class Init
+    {
+      name = "Init";
+      init = /*%FSM<STATEINIT""">*/"_ntime = 0;"/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+        /*%FSM<LINK "Loop">*/
+        class Loop
+        {
+          priority = 0.000000;
+          to="Update_Conquest";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"time > _ntime"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+      };
+    };
+    /*%FSM</STATE>*/
+    /*%FSM<STATE "End">*/
+    class End
+    {
+      name = "End";
+      init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+      };
+    };
+    /*%FSM</STATE>*/
+    /*%FSM<STATE "Update_Conquest">*/
+    class Update_Conquest
+    {
+      name = "Update_Conquest";
+      init = /*%FSM<STATEINIT""">*/"_t = [];" \n
+       "" \n
+       "{" \n
+       "	if ((_x getVariable 'sideID') == sideID) then {_t = _t + [_x]};" \n
+       "} forEach towns;" \n
+       "" \n
+       "_set = [];" \n
+       "" \n
+       "if (count _t > 0) then {" \n
+       "	{" \n
+       "		_neighbors = _x getVariable ""neighbors"";" \n
+       "		" \n
+       "		if !(isNil ""_neighbors"") then {" \n
+       "			{" \n
+       "				if ((_x getVariable 'sideID') != sideID) then {" \n
+       "					if (isNil {_x getVariable ""wfbe_marker""}) then {" \n
+       "						_marker = Format [""wfbe_conquest_%1"", buildingMarker];" \n
+       "						buildingMarker = buildingMarker + 1;" \n
+       "						_x setVariable ['wfbe_marker', _marker];" \n
+       "						createMarkerLocal [_marker, getPos _x];" \n
+       "						_marker setMarkerColorLocal ""ColorOrange"";" \n
+       "						_marker setMarkerShapeLocal ""ELLIPSE"";" \n
+       "						_marker setMarkerAlphaLocal 0.60;" \n
+       "						_marker setMarkerBrushLocal ""SOLID"";" \n
+       "						_marker setMarkerSizeLocal [400,400];						" \n
+       "			" \n
+       "			_markerChb = Format [""wfbe_conquestB_%1"",buildingMarker];" \n
+       "			buildingMarker = buildingMarker + 1;" \n
+       "			_nearestChb = _x;" \n
+       "			_nearestChb setVariable ['wfbe_markerChb', _markerChb];" \n
+       "			createMarkerLocal [_markerChb, getPos _x];" \n
+       "			_markerChb setMarkerColorLocal ""ColorOrange"";" \n
+       "			_markerChb setMarkerShapeLocal ""ELLIPSE"";" \n
+       "			_markerChb setMarkerBrushLocal ""border"";" \n
+       "			_size =601;" \n
+       "			_markerChb setMarkerSizeLocal [_size , _size];" \n
+       "			_markerChb setMarkerAlphaLocal 1;" \n
+       "" \n
+       "			_markerCC = Format [""wfbe_conquestCC_%1"", buildingMarker];" \n
+       "			buildingMarker = buildingMarker + 1;" \n
+       "			_nearestCC = _x;" \n
+       "			_nearestCC setVariable ['wfbe_markerCC', _markerCC];" \n
+       "			createMarkerLocal [_markerCC, getPos _x];" \n
+       "			_markerCC setMarkerColorLocal ""ColorOrange"";" \n
+       "			_markerCC setMarkerTypeLocal ""selector_selectedMission"";" \n
+       "			_markerCC setMarkerAlphaLocal 0.60;" \n
+       "			_markerCC setMarkerSizeLocal [2,2];" \n
+       "					};" \n
+       "					if !(_x in _set) then {_set = _set + [_x]};" \n
+       "				};" \n
+       "			} forEach _neighbors;" \n
+       "		};" \n
+       "	} forEach _t;" \n
+       "} else {" \n
+       "	_hq = (sideJoined) Call GetSideHQ;" \n
+       "	_nearest = ([_hq, towns] Call SortByDistance) select 0;" \n
+       "	if (isNil {_nearest getVariable ""wfbe_marker""}) then {" \n
+       "		_marker = Format [""wfbe_conquest_%1"", buildingMarker];" \n
+       "		buildingMarker = buildingMarker + 1;" \n
+       "		_nearest setVariable ['wfbe_marker', _marker];" \n
+       "		createMarkerLocal [_marker, getPos _nearest];" \n
+       "		_marker setMarkerColorLocal ""ColorOrange"";" \n
+       "		_marker setMarkerShapeLocal ""ELLIPSE"";" \n
+       "		_marker setMarkerAlphaLocal 0.60;" \n
+       "		_marker setMarkerBrushLocal ""SOLID"";" \n
+       "		_marker setMarkerSizeLocal [400,400];" \n
+       "		" \n
+       "			_markerChb = Format [""wfbe_conquestB_%1"",buildingMarker];" \n
+       "			buildingMarker = buildingMarker + 1;" \n
+       "			_nearestChb = _nearest;" \n
+       "			_nearestChb setVariable ['wfbe_markerChb', _markerChb];" \n
+       "			createMarkerLocal [_markerChb, getPos _nearest];" \n
+       "			_markerChb setMarkerColorLocal ""ColorOrange"";" \n
+       "			_markerChb setMarkerShapeLocal ""ELLIPSE"";" \n
+       "			_markerChb setMarkerBrushLocal ""border"";" \n
+       "			_size =600;" \n
+       "			_markerChb setMarkerSizeLocal [_size , _size];" \n
+       "			_markerChb setMarkerAlphaLocal 1;" \n
+       "		_markerCC = Format [""wfbe_conquestCC_%1"", buildingMarker];" \n
+       "		buildingMarker = buildingMarker + 1;" \n
+       "		_nearestCC = _nearest;" \n
+       "		_nearestCC setVariable ['wfbe_markerCC', _markerCC];" \n
+       "		createMarkerLocal [_markerCC, getPos _nearest];" \n
+       "		_markerCC setMarkerColorLocal ""ColorOrange"";" \n
+       "		_markerCC setMarkerTypeLocal ""selector_selectedMission"";" \n
+       "		_markerCC setMarkerAlphaLocal 0.60;" \n
+       "		_markerCC setMarkerSizeLocal [2,2];" \n
+       "	};" \n
+       "	_set = [_nearest];" \n
+       "};" \n
+       "" \n
+       "_set = towns - _set;" \n
+       "{" \n
+       "	if !(isNil {_x getVariable ""wfbe_marker""}) then {" \n
+       "		deleteMarkerLocal (_x getVariable ""wfbe_marker"");" \n
+       "		deleteMarkerLocal (_x getVariable ""wfbe_markerCC"");" \n
+       "		deleteMarkerLocal (_x getVariable ""wfbe_markerChb"");" \n
+       "		_x setVariable [""wfbe_marker"", nil];" \n
+       "		_x setVariable [""wfbe_markerCC"", nil];" \n
+       "		_x setVariable [""wfbe_markerChb"", nil];" \n
+       "	};" \n
+       "} forEach _set;" \n
+       "" \n
+       "_ntime = time + 10;"/*%FSM</STATEINIT""">*/;
+      precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+      class Links
+      {
+        /*%FSM<LINK "Gameover">*/
+        class Gameover
+        {
+          priority = 0.000000;
+          to="End";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"gameOver"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+        /*%FSM<LINK "Loop">*/
+        class Loop
+        {
+          priority = 0.000000;
+          to="Update_Conquest";
+          precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+          condition=/*%FSM<CONDITION""">*/"time > _ntime"/*%FSM</CONDITION""">*/;
+          action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+        };
+        /*%FSM</LINK>*/
+      };
+    };
+    /*%FSM</STATE>*/
+  };
+  initState="Init";
+  finalStates[] =
+  {
+    "End",
+  };
+};
+/*%FSM</COMPILE>*/

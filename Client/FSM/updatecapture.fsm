@@ -1,0 +1,285 @@
+/*%FSM<COMPILE "D:\Steam\steamapps\common\Arma 3 Tools\FSMEditor\scriptedFSM.cfg, updatecapture">*/
+/*%FSM<HEAD>*/
+/*
+item0[] = {"Init",0,250,64.981941,-136.945908,154.981949,-86.946060,0.000000,"Init"};
+item1[] = {"Check_Towns",2,250,-66.836029,-56.267544,23.163887,-6.267582,0.000000,"Check Towns"};
+item2[] = {"End",1,250,-218.006683,15.304325,-128.006653,65.304314,0.000000,"End"};
+item3[] = {"Loop",4,4314,65.605347,-56.267605,155.605377,-6.267574,0.000000,"Loop"};
+item4[] = {"Gameover",4,218,-216.668854,-56.267559,-126.668869,-6.267574,0.000000,"Gameover"};
+item5[] = {"Update_Capture",2,250,66.545486,22.916348,156.545471,72.916397,0.000000,"Update Capture"};
+item6[] = {"In_Range",4,218,-66.545563,22.916351,23.454376,72.916374,0.000000,"In Range"};
+item7[] = {"Not_in_Range",4,218,-167.954971,85.174767,-77.955025,135.174774,0.000000,"Not in Range"};
+item8[] = {"Hide",2,250,215.453018,86.056137,305.453064,136.056137,0.000000,"Hide"};
+link0[] = {0,3};
+link1[] = {1,4};
+link2[] = {1,6};
+link3[] = {1,7};
+link4[] = {3,1};
+link5[] = {4,2};
+link6[] = {5,3};
+link7[] = {6,5};
+link8[] = {7,8};
+link9[] = {8,3};
+globals[] = {0.000000,0,0,0,0,640,480,1,25,6316128,1,-223.065842,223.064651,357.122528,-310.146912,773,863,1};
+window[] = {2,-1,-1,-1,-1,1272,234,1704,234,3,791};
+*//*%FSM</HEAD>*/
+class FSM
+{
+        fsmName = "updatecapture";
+        class States
+        {
+                /*%FSM<STATE "Init">*/
+                class Init
+                {
+                        name = "Init";
+                        itemno = 0;
+                        init = /*%FSM<STATEINIT""">*/"disableSerialization;" \n
+                         "_delay = 4;" \n
+                         "_lastCheck = """";" \n
+                         "_lastSID = -1;" \n
+                         "_lastUpdate = time;" \n
+                         "_SleepTime = 2;" \n
+                         "" \n
+                         "_tcarm = 'WFBE_TOWNCAPTUREASSISTRANGEMODIFIER' Call GetNamespace;" \n
+                         "" \n
+                         "_colorBlack = [0.70,0.70,0.70,0.90];" \n
+                         "_colorGreen = [0,0.35,0.9,0.90];" \n
+                         "_colorRed = [0.7,0,0,0.90];" \n
+                         "_coloryellow = [1,1,0,0.90];" \n
+                         "" \n
+                         "_colorFriendly = switch ('Friendly' Call GetMarkerColoration) do {" \n
+                         "	case ""ColorGreen"": {_colorGreen};" \n
+                         "	case ""ColorBlack"": {_colorBlack};" \n
+                         "	case ""ColorRed"": {_colorRed};" \n
+                         "	default {_colorGreen};" \n
+                         "};" \n
+                         "" \n
+                         "_colorEnemy = switch ('Enemy' Call GetMarkerColoration) do {" \n
+                         "	case ""ColorBlue"": {_colorGreen};" \n
+                         "	case ""ColorBlack"": {_colorBlack};" \n
+                         "	case ""ColorRed"": {_colorRed};" \n
+                         "	default {_colorYellow};" \n
+                         "};" \n
+                         "" \n
+                         "_coloResistance = switch ('Resistance' Call GetMarkerColoration) do {" \n
+                         "	case ""ColorGreen"": {_colorGreen};" \n
+                         "	case ""ColorBlack"": {_colorBlack};" \n
+                         "	case ""ColorRed"": {_colorRed};" \n
+                         "	default {_colorBrown};" \n
+                         "};" \n
+                         ""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Loop">*/
+                                class Loop
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Check_Towns";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _lastUpdate >= _SleepTime && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Check_Towns">*/
+                class Check_Towns
+                {
+                        name = "Check_Towns";
+                        itemno = 1;
+                        init = /*%FSM<STATEINIT""">*/"_sorted = [player,towns] Call SortByDistance;" \n
+                         "_nearest = _sorted select 0;" \n
+                         "_town = _nearest;" \n
+                         "_range = (_nearest getVariable ""range"") * _tcarm;" \n
+                         "" \n
+                         "_update = (player distance _nearest < _range && alive player);" \n
+                         "" \n
+                         "_lastUpdate = time;" \n
+                         "" \n
+                         ""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "In_Range">*/
+                                class In_Range
+                                {
+                                        itemno = 6;
+                                        priority = 0.000000;
+                                        to="Update_Capture";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"_update && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Not_in_Range">*/
+                                class Not_in_Range
+                                {
+                                        itemno = 7;
+                                        priority = 0.000000;
+                                        to="Hide";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"!_update && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                                /*%FSM<LINK "Gameover">*/
+                                class Gameover
+                                {
+                                        itemno = 4;
+                                        priority = 0.000000;
+                                        to="End";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "End">*/
+                class End
+                {
+                        name = "End";
+                        itemno = 2;
+                        init = /*%FSM<STATEINIT""">*/""/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Update_Capture">*/
+                class Update_Capture
+                {
+                        name = "Update_Capture";
+                        itemno = 5;
+                        init = /*%FSM<STATEINIT""">*/"_sideID = _nearest getVariable [""sideID"",-1];" \n
+                         "_curSV = _nearest getVariable ""supplyValue"";" \n
+                         "_maxSV = _nearest getVariable ""maxSupplyValue"";" \n
+                         "_timerPT = _nearest getVariable [""Peace"",PARM_Gameplay_PeaceTimer];" \n
+                         "" \n
+                         "_txt = """";" \n
+                         "_nObjects = nearestObjects [player, WFCAMP, 25];" \n
+                         "_nObject = if (count _nObjects > 0) then {_nObjects select 0} else {objNull};" \n
+                         "if !(isNull _nObject) then {" \n
+                         "	_sideID = _nObject getVariable ""sideID"";" \n
+                         "	if !(isNil '_sideID') then {" \n
+                         "		_curSV = _nObject getVariable ""supplyValue"";" \n
+                         "		if (_lastCheck == ""Town"") then {_delay = 0};" \n
+                         "		_lastCheck = ""Camp"";" \n
+                         "            _txt = Format [""Strong Point %1/%2"",_curSV,100];" \n
+                         "	} else {" \n
+                         "		_sideID = -1;" \n
+                         "	};" \n
+                         "	if (player distance _nObject >= 25) then {" \n
+                         "		_lastCheck = ""Town"";" \n
+                         "		_sideID = _nearest getVariable ""sideID"";" \n
+                         "		_curSV = _nearest getVariable ""supplyValue"";" \n
+                         "		_txt = Format [""   Town %1/%2"",_curSV,_maxSV];" \n
+                         "	};" \n
+                         "" \n
+                         "} else {" \n
+                         "	if (_lastCheck == ""Camp"") then {_delay = 0};" \n
+                         "	_lastCheck = ""Town"";" \n
+                         "	if (_nearest getVariable ""frozen"") then {" \n
+                         "		_txt = Format["" Peace Time: %1:%2"",floor((_timerPT / 60) % 60),_timerPT % 60];" \n
+                         "	} else {" \n
+                         "		_txt = Format [""   Town %1/%2"",_curSV,_maxSV];" \n
+                         "	};" \n
+                         "};" \n
+                         "" \n
+                         "_barColor = [];" \n
+                         "if (_sideID == RESISTANCEID || _sideID == -1) then {_barColor = _coloResistance};" \n
+                         "if ((_sideID == WESTID)&&(sideID == WESTID) || (_sideID == EASTID)&&(sideID == EASTID)) then {_barColor = _colorFriendly}; //--- Green" \n
+                         "if ((_sideID == WESTID)&&(sideID == EASTID) || (_sideID == EASTID)&&(sideID == WESTID)) then {_barColor = _colorEnemy};" \n
+                         "if (_nearest getVariable ""frozen"") then {_barColor = _coloryellow};" \n
+                         "if (_sideID != _lastSID) then {_delay = 0};" \n
+                         "if (isNull ([""currentCutDisplay""] call BIS_FNC_GUIget)) then {12450 cutRsc[""OptionsAvailable"",""PLAIN"",0];_delay = 0};" \n
+                         "if (!isNull ([""currentCutDisplay""] call BIS_FNC_GUIget)) then {" \n
+                         "	_control = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3800;" \n
+                         "	_control ctrlShow true;" \n
+                         "	_control CtrlSetBackgroundColor _barColor;" \n
+                         "	_backgroundControl = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3600;" \n
+                         "	_backgroundControl ctrlShow true;" \n
+                         "	_backgroundControl CtrlSetBackgroundColor [0, 0, 0, 0.99];" \n
+                         "	_textControl = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3900;" \n
+                         "	_textControl ctrlShow true;" \n
+                         "	_textControl ctrlSetText _txt;" \n
+                         "	_maxWidth = (CtrlPosition _backgroundControl Select 2) - 0.02;" \n
+                         "	_position = CtrlPosition _control;" \n
+                         "" \n
+                         "	if(player distance _nObject <= 25) then{" \n
+                         "		_position Set[2, _maxWidth * _curSV / 100];" \n
+                         "	} else {		" \n
+                         "		if (_nearest getVariable ""frozen"") then {" \n
+                         "			_position Set[2, _maxWidth * _timerPT / PARM_Gameplay_PeaceTimer];" \n
+                         "		}else{" \n
+                         "			_position Set[2, _maxWidth * _curSV / _maxSV];" \n
+                         "		};	" \n
+                         "	};	" \n
+                         "	" \n
+                         "	_control CtrlSetPosition _position;" \n
+                         "	_control CtrlCommit _delay;" \n
+                         "	_delay = 4;" \n
+                         "	_lastSID = _sideID;" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Loop">*/
+                                class Loop
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Check_Towns";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _lastUpdate >= _SleepTime && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+                /*%FSM<STATE "Hide">*/
+                class Hide
+                {
+                        name = "Hide";
+                        itemno = 8;
+                        init = /*%FSM<STATEINIT""">*/"_delay = 0;" \n
+                         "if (isNull ([""currentCutDisplay""] call BIS_FNC_GUIget)) then {12450 cutRsc[""OptionsAvailable"",""PLAIN"",0]};" \n
+                         "if (!isNull ([""currentCutDisplay""] call BIS_FNC_GUIget)) then {" \n
+                         "	_control = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3800;" \n
+                         "	_backgroundControl = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3600;" \n
+                         "	_textControl = ([""currentCutDisplay""] call BIS_FNC_GUIget) DisplayCtrl 3900;" \n
+                         "	_control ctrlShow false;" \n
+                         "	_backgroundControl ctrlShow false;" \n
+                         "	_textControl ctrlShow false;" \n
+                         "};"/*%FSM</STATEINIT""">*/;
+                        precondition = /*%FSM<STATEPRECONDITION""">*/""/*%FSM</STATEPRECONDITION""">*/;
+                        class Links
+                        {
+                                /*%FSM<LINK "Loop">*/
+                                class Loop
+                                {
+                                        itemno = 3;
+                                        priority = 0.000000;
+                                        to="Check_Towns";
+                                        precondition = /*%FSM<CONDPRECONDITION""">*/""/*%FSM</CONDPRECONDITION""">*/;
+                                        condition=/*%FSM<CONDITION""">*/"time - _lastUpdate >= _SleepTime && !gameOver"/*%FSM</CONDITION""">*/;
+                                        action=/*%FSM<ACTION""">*/""/*%FSM</ACTION""">*/;
+                                };
+                                /*%FSM</LINK>*/
+                        };
+                };
+                /*%FSM</STATE>*/
+        };
+        initState="Init";
+        finalStates[] =
+        {
+                "End",
+        };
+};
+/*%FSM</COMPILE>*/
