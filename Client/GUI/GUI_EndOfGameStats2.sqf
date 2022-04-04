@@ -93,6 +93,12 @@ _eastMHQ = WF_Logic getVariable "EastMHQ";
 _westBuildings = WF_Logic getVariable ["WestBaseStructures",[]];
 _eastBuildings = WF_Logic getVariable ["EastBaseStructures",[]];
 
+_westMQH_alive = false;
+if (isNull _westMHQ) then {_westMQH_alive = false;}else{_westMQH_alive = alive _westMHQ;};
+
+_eastMHQ_alive = false;
+if (isNull _eastMHQ) then {_eastMHQ_alive = false;}else{_eastMHQ_alive = alive _eastMHQ;};
+
 _numWestFacs = 0;
 {
 if(_x isKindOf WESTLIGHT || _x isKindOf WESTHEAVY || _x isKindOf WESTAIR) then
@@ -108,8 +114,8 @@ if(_x isKindOf EASTLIGHT || _x isKindOf EASTHEAVY || _x isKindOf EASTAIR) then
 	}
 } ForEach _eastBuildings;
 
-if ((_numWestFacs == 0)&&!(alive _westMHQ)||(_eastCity == _total)) then {_eastPoints = _eastPoints + 1}; 
-if ((_numEastFacs == 0)&&!(alive _eastMHQ)||(_westCity == _total)) then {_westPoints = _westPoints + 1}; 
+if ((_numWestFacs == 0)&&!_eastMHQ_alive||(_eastCity == _total)) then {_eastPoints = _eastPoints + 1}; 
+if ((_numEastFacs == 0)&&!_eastMHQ_alive||(_westCity == _total)) then {_westPoints = _westPoints + 1}; 
 
 //--- Benny. Time
 _timeGet = Call _getTime;
