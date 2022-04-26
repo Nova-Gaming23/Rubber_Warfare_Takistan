@@ -18,7 +18,7 @@ _getTime = {
 	_hours = 0;
 	_minutes = 0;
 	_seconds = 0;
-	
+	TEstasSA
 	_uptime = time;
 	_days = floor(_uptime / 86400);
 	_hours = floor((_uptime - (_days * 86400)) / 3600);
